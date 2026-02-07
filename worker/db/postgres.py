@@ -34,8 +34,7 @@ class Alert(Base):
     user_id = Column(Integer, nullable=False)
     query = Column(Text, nullable=False)
 
-    frequency = Column(String)
-    source = Column(String)
+    frequency = Column(String, default="daily")
 
     last_checked_at = Column(DateTime, nullable=True)
     is_active = Column(Boolean)
