@@ -3,6 +3,7 @@
 
 # Virtual environment
 venv/
+backend/venv/
 
 # Python cache
 __pycache__/
@@ -11,3 +12,6 @@ __pycache__/
 # Editor / OS
 .vscode/
 .DS_Store
+
+# Logs
+*.log

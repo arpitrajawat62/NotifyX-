@@ -9,13 +9,13 @@ def fetch_rss(feed_url: str):
     for entry in feed.entries:
         
         parsed_time = (
-            getattr(entry, "published_At", None)
+            getattr(entry, "published_parsed", None)
             or getattr(entry, "updated_parsed", None)
         )
         if not parsed_time:
             continue
 
-        published_at = datetime(*entry.published_parsed[:6], tzinfo=timezone.utc)
+        published_at = datetime(*parsed_time[:6], tzinfo=timezone.utc)
 
         item = {
             "id": entry.get("id") or entry.get("link"),

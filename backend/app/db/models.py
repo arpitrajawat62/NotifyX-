@@ -21,7 +21,6 @@ class Alert(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     query = Column(String, nullable=False)
     frequency = Column(String, nullable=False, default="daily")
-    source = Column(String, nullable=False, default="rss")
     last_checked_at = Column(TIMESTAMP(timezone=True), nullable=True)
     is_active = Column(Boolean, nullable=False, default=True)
     
