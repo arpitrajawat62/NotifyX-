@@ -1,13 +1,22 @@
-from pydantic import BaseModel
-
-
+from pydantic import BaseModel, ConfigDict
+from datetime import datetime
+from app.core.enums import AlertFrequency
 
 class CreateAlert(BaseModel):
-    user_id: int
     query: str
-    frequency: str = "daily"
+    frequency: AlertFrequency = AlertFrequency.daily
+    source: str = "google_rss"
+    is_active: bool = True
+
 
 class AlertResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     query: str
-    frequency: str
+    frequency: AlertFrequency
+    source: str
+    is_active: bool
+    last_checked_at: datetime | None
+
+     
