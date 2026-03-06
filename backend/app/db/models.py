@@ -1,6 +1,6 @@
-
-from sqlalchemy import TIMESTAMP, Boolean, ForeignKey, Integer, Column, String
-from .database import Base
+from sqlalchemy import TIMESTAMP, Boolean, ForeignKey, Integer, Column, String, Enum
+from app.db.database import Base
+from app.core.enums import AlertFrequency
 
 
 class User(Base):
@@ -20,7 +20,8 @@ class Alert(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     query = Column(String, nullable=False)
-    frequency = Column(String, nullable=False, default="daily")
-    last_checked_at = Column(TIMESTAMP(timezone=True), nullable=True)
+    frequency = Column(Enum(AlertFrequency), nullable=False)
+    source = Column(String, nullable=False, default="google_rss")
+    last_checked_at = Column(TIMESTAMP(timezone=True))
     is_active = Column(Boolean, nullable=False, default=True)
     
