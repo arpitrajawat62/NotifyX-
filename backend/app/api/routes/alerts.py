@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from app.schemas.alert import CreateAlert, AlertResponse
 from app.db.database import db_dependency
 from app.services.alert_service import (
@@ -19,7 +19,7 @@ router = APIRouter(
     tags=["alerts"]
 )
 
-@router.post("/", response_model=AlertResponse)
+@router.post("/", response_model=AlertResponse, status_code=201)
 def create_new_alert(alert_in: CreateAlert, db: db_dependency, user: user_dependency):
     if user is None:
         raise HTTPException(status_code=401, detail='Authentication Failed')
@@ -28,18 +28,26 @@ def create_new_alert(alert_in: CreateAlert, db: db_dependency, user: user_depend
 
 @router.get("/", response_model=list[AlertResponse])
 def get_alerts(db :db_dependency, user: user_dependency):
-    return get_all_alerts(db, user["id"])
+     if user is None:
+        raise HTTPException(status_code=401, detail='Authentication Failed')
+     return get_all_alerts(db, user["id"])
     
 
 @router.get("/{alert_id}", response_model=AlertResponse)
-def get_alert(alert_id: int, db: db_dependency):
-    return get_alert_by_id(db, alert_id)
+def get_alert(alert_id: int, db: db_dependency, user: user_dependency):
+     
+     alert = get_alert_by_id(db, alert_id, user["id"])
+     if not alert:
+        raise HTTPException(status_code=404, detail='Alert not found')
+     return alert
 
 
 @router.delete("/{alert_id}", response_model=AlertResponse)
-def delete_alert_route(alert_id: int, db: db_dependency):
-    delete_alert(db, alert_id)
-    return {"message": "Alert deleted succesfully"}
+def delete_alert_route(alert_id: int, db: db_dependency, user: user_dependency):
+    deleted_alert = delete_alert(db, alert_id, user["id"])
+    if not deleted_alert:
+            raise HTTPException(status_code=404, detail="Alert not found")
+    return deleted_alert
 
 # @router.put("/{alert_id}", response_model=AlertResponse)
 # def update_alert_route(alert_id: int, alert_in: updateAlert, db:db_dependency):
