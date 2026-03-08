@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 import urllib.parse
 from dotenv import load_dotenv
 import os
+import time
 
 from fetchers.rss_fetcher import fetch_rss
 from diff.comparator import filter_new_items
@@ -94,11 +95,18 @@ def run_worker():
 
             print("Updated last_checked_at.\n")
 
-        print("\n=== Worker Run Complete ===\n")
+        print("\n=== Worker Run Complete ===\n")       
 
     finally:
         db.close()
 
 
 if __name__ == "__main__":
-    run_worker()
+    while True:
+        try:
+            print("\n=== NotifyX Worker Loop ===")
+            run_worker()
+        except Exception as e:
+            print("Worker error:", e)
+        time.sleep(60)
+

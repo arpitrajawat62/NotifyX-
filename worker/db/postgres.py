@@ -11,13 +11,10 @@ from sqlalchemy import (
     Text,
 )
 from sqlalchemy.orm import sessionmaker, declarative_base
-
-
-BASE_DIR = Path(__file__).resolve().parents[2]
-ENV_PATH = BASE_DIR / "backend" / ".env"
-
-load_dotenv(dotenv_path=ENV_PATH)
+from dotenv import load_dotenv
 load_dotenv()
+
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 

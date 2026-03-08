@@ -27,7 +27,3 @@ def send_email(to_email: str, subject: str, body: str):
         server.starttls()
         server.login(SMTP_EMAIL, SMTP_PASSWORD)
         server.send_message(msg)
-
-    # print(f"Email sent to {RECEIVER_email}")
-
-
