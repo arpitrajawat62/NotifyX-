@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NotifyX - Smart Alerts</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <h1 class="logo">
+        <a href="#hero">NotifyX</a>
+      </h1>
+
+      <nav class="nav-links">
+        <a href="#hero">Home</a>
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="#footer">Contact</a>
+      </nav>
+
+      <div class="auth-buttons">
+        <a href="#" class="login open-login">Login</a>
+        <a href="#" class="signup open-register">Get Started</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section id="hero" class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h2>
+              Never Miss What Matters.<br>
+              <span class="highlight">Instant Smart Alerts.</span>
+            </h2>
+
+            <p>
+              Track jobs, news, trends, competitors, and prices.<br>
+              Get notified the moment something important happens.
+            </p>
+
+            <a href="#" class="cta open-register">Start Free Trial</a>
+          </div>
+
+          <!-- Optional subtle visual element (you can replace with an actual image later) -->
+          <div class="hero-visual">
+            <div class="mockup">
+              <div class="notification-bell">🛎️</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" class="features">
+      <div class="container">
+        <h2 class="section-title">Powerful Features</h2>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="icon">🛎️</div>
+            <h3>Real-time Alerts</h3>
+            <p>Instant notifications across email, Slack, Discord, and more.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="icon">🔍</div>
+            <h3>Smart Tracking</h3>
+            <p>Monitor jobs, news, competitors, prices, and trends effortlessly.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="icon">📊</div>
+            <h3>Custom Filters</h3>
+            <p>Advanced rules so you only receive highly relevant alerts.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="icon">🔗</div>
+            <h3>Integrations</h3>
+            <p>Seamlessly connect with your favorite tools and workflows.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- USE CASES -->
+    <section class="use-cases">
+      <div class="container">
+        <h2 class="section-title">Who is NotifyX for?</h2>
+
+        <div class="use-grid">
+          <div class="use-card">
+            <h3>👨‍💻 Developers</h3>
+            <p>Stay ahead with tech trends, GitHub activity, and job opportunities.</p>
+          </div>
+
+          <div class="use-card">
+            <h3>🛒 Founders</h3>
+            <p>Monitor competitors, pricing changes, and market movements.</p>
+          </div>
+
+          <div class="use-card">
+            <h3>🎓 Students</h3>
+            <p>Discover internships, scholarships, and career opportunities instantly.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how" class="how-it-works">
+      <div class="container">
+        <h2 class="section-title">How It Works</h2>
+
+        <div class="steps">
+          <div class="step">
+            <span class="step-number">1</span>
+            <h3>Set your interests</h3>
+            <p>Choose keywords, topics, or specific sources.</p>
+          </div>
+
+          <div class="step">
+            <span class="step-number">2</span>
+            <h3>We monitor</h3>
+            <p>Our system scans the web 24/7 using smart AI.</p>
+          </div>
+
+          <div class="step">
+            <span class="step-number">3</span>
+            <h3>Get alerts</h3>
+            <p>Receive only what matters — instantly.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="final-cta">
+      <div class="container">
+        <h2>Start tracking what matters today</h2>
+        <p>No spam. Only intelligent, timely alerts.</p>
+        <a href="#" class="cta open-register">Get Started Free</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="footer" class="footer">
+    <div class="container">
+
+      <div class="footer-grid">
+        <div>
+          <h3 class="logo">NotifyX</h3>
+          <p>Smart alerts for the fast-moving internet.</p>
+        </div>
+
+        <div>
+          <h4>Product</h4>
+          <a href="#features">Features</a>
+        </div>
+
+        <div>
+          <h4>Company</h4>
+          <a href="#">About</a>
+          <a href="#">Blog</a>
+        </div>
+
+        <div>
+          <h4>Legal</h4>
+          <a href="#">Privacy</a>
+        </div>
+
+        <div>
+        <h4>Contact</h4>
+        <a href="mailto:arpitsingh62650@gmail.com">arpitsingh62650@gmail.com</a>
+        </div>
+    
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 NotifyX. All rights reserved.</p>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- LOGIN MODAL -->
+  <div id="loginModal" class="modal hidden">
+    <div class="modal-card">
+      <button type="button" class="close-btn" id="closeModal">&times;</button>
+      <h2>Login</h2>
+
+      <form id="loginForm">
+        <input id="username" type="text" placeholder="Username or Email" required>
+        <input id="password" type="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- REGISTER MODAL -->
+  <div id="registerModal" class="modal hidden">
+    <div class="modal-card">
+      <button type="button" class="close-btn" id="closeRegister">&times;</button>
+      <h2>Create Account</h2>
+
+      <form id="registerForm">
+        <input type="text" id="reg_username" placeholder="Username" required>
+        <input type="text" id="reg_first_name" placeholder="First Name" required>
+        <!-- Note: You were missing last_name in HTML but using it in JS. Added it here -->
+        <input type="text" id="reg_last_name" placeholder="Last Name" required>
+        <input type="email" id="reg_email" placeholder="Email" required>
+        <input type="password" id="reg_password" placeholder="Password" required>
+        <button type="submit">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/index.js"></script>
+
+</body>
+</html>
