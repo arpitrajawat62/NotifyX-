@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - NotifyX</title>
+
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+</head>
+<body>
+
+  <div class="dashboard">
+
+    <!-- Top Bar -->
+    <header class="top-bar">
+      <div class="logo">
+        <a href="index.html">NotifyX</a>
+      </div>
+      <div class="top-actions">
+        <a href="create-alert.html" class="new-alert-btn">+ Create Alert</a>
+        <button id="logout-btn" class="logout-btn">Logout</button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- Welcome -->
+      <div class="welcome">
+        <h1>Welcome back, <span id="welcome-name">User</span>!</h1>
+      </div>
+
+      <div class="grid">
+
+        <!-- Compact Profile -->
+        <div class="profile-card">
+          <h3>Your Profile</h3>
+          <div class="profile-info">
+            <div class="row">
+              <span class="label">Username</span>
+              <span id="user-username" class="value">-</span>
+            </div>
+            <div class="row">
+              <span class="label">Email</span>
+              <span id="user-email" class="value">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Alerts -->
+        <div class="alerts-card">
+          <div class="alerts-header">
+            <h3>Your Active Alerts</h3>
+            <a href="create-alert.html" class="create-btn">+ New Alert</a>
+          </div>
+          <div id="alerts-list">
+            <p class="loading">Loading your alerts...</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+
+</body>
+</html>
