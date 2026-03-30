@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Alert - NotifyX</title>
+
+    <link rel="stylesheet" href="css/alert.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="page-center">
+
+    <div class="alert-card">
+
+      <a href="dashboard.html" class="back-link">← Back to Dashboard</a>
+
+      <h2>Create New Alert</h2>
+      
+      <p class="subtitle">
+        Set up smart tracking and get notified when something important happens.
+      </p>
+
+      <form id="alertForm">
+        <div class="form-group">
+          <label for="query">What do you want to track?</label>
+          <input type="text" id="query" placeholder="e.g. React jobs, AI news, Tesla stock..." required>
+        </div>
+
+        <div class="form-group">
+          <label for="frequency">How often should we notify you?</label>
+          <select id="frequency" required>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </div>
+
+        <button type="submit">Create Alert</button>
+      </form>
+
+    </div>
+
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/alert.js"></script>
+
+</body>
+</html>
