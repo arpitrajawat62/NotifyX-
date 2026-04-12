@@ -62,6 +62,11 @@ async def get_current_user_info(db: db_dependency, current_user: dict = Depends(
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_user(db: db_dependency,create_user_request: CreateUser):
+
+    existing_user = db.query(User).filter(User.username == create_user_request.username).first()
+    if existing_user:
+         raise HTTPException(status_code=400, detail="username already exists")
+    
     create_user_model = User(
         username=create_user_request.username,
         email=create_user_request.email,
@@ -72,6 +77,7 @@ async def create_user(db: db_dependency,create_user_request: CreateUser):
     )
     db.add(create_user_model)
     db.commit()
+
     return {"message": "User created successfully"}
 
     

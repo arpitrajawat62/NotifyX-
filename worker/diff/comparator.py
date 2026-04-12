@@ -1,9 +1,12 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 def filter_new_items(items, last_checked_at: datetime):
 
     if last_checked_at is None:
         return items
+    
+    if last_checked_at.tzinfo is None:
+        last_checked_at = last_checked_at.replace(tzinfo=timezone.utc)
 
     new_items = []
 

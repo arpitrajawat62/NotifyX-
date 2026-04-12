@@ -1,101 +1,137 @@
-from datetime import datetime, timezone
-import urllib.parse
+from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
-import os
 import time
 
-from fetchers.rss_fetcher import fetch_rss
+from fetchers.rss_fetcher import fetch_jobs  
 from diff.comparator import filter_new_items
-from db.postgres import SessionLocal, Alert
-from notify.email_sender import send_email
-
+from db.postgres import SessionLocal, Alert, User
+from service.email_sender import send_email
 
 load_dotenv()
 
-# Read receiver email from .env
-RECEIVER_EMAIL = os.getenv("ALERT_RECEIVER")
 
-if not RECEIVER_EMAIL:
-    raise Exception("ALERT_RECEIVER not set in .env")
+def should_run(alert):
+    now = datetime.now(timezone.utc)
+
+    if alert.last_checked_at is None:
+        return True
+
+    delta = now - alert.last_checked_at
+
+    if alert.frequency == "daily":
+        return delta >= timedelta(days=1)
+    elif alert.frequency == "weekly":
+        return delta >= timedelta(weeks=1)
+    elif alert.frequency == "monthly":
+        return delta >= timedelta(days=30)
+
+    return True
 
 
 def build_subject(alert):
-    return f"New alerts for: {alert.query}"
+    return f"New job alerts for: {alert.query}"
 
 
 def build_body(items):
     lines = []
 
     for item in items:
-        lines.append(f"- {item['title']}")
-        if item.get("link"):
-            lines.append(f"  {item['link']}")
+        lines.append(f"💼 {item['title']}")
+        lines.append(f"🏢 {item['company']}")
+        lines.append(f"📍 {item['location']}")
+        lines.append(f"🔗 Apply here: {item['link']}")
         lines.append("")
 
     return "\n".join(lines)
 
 
-def build_google_news_rss(query: str) -> str:
-    encoded_query = urllib.parse.quote(query)
-    return f"https://news.google.com/rss/search?q={encoded_query}"
+def dedupe(items):
+    seen = set()
+    unique = []
+
+    for item in items:
+        if item["id"] not in seen:   
+            seen.add(item["id"])
+            unique.append(item)
+
+    return unique
 
 
 def run_worker():
-    print("\n=== NotifyX Worker Started ===\n")
+    print("\n=== NotifyX Job Worker Started ===\n")
 
     db = SessionLocal()
 
     try:
-        alerts = (
-            db.query(Alert)
-            .filter(Alert.is_active == True)
-            .filter(Alert.frequency == "daily")
-            .all()
-        )
-
+        alerts = db.query(Alert).filter(Alert.is_active == True).all()
         print(f"Found {len(alerts)} active alerts.\n")
 
         for alert in alerts:
-            print("-----------------------------------")
-            print(f"Processing Alert #{alert.id}")
-            print("Query:", alert.query)
+            if not should_run(alert):
+                print(f"Skipping Alert #{alert.id} (not due)")
+                continue
 
-            feed_url = build_google_news_rss(alert.query)
+            print(f"\nProcessing Alert #{alert.id} -> {alert.query}")
 
-            last_checked = alert.last_checked_at
+            #  FETCH JOBS ONLY
+            items = fetch_jobs(alert.query)
+            print(f"Jobs fetched: {len(items)}")
 
-            if last_checked is None:
-                print("First run → treating all items as NEW")
-            else:
-                print("Last checked at:", last_checked)
+            #  REMOVE DUPLICATES
+            items = dedupe(items)
+            print(f"After dedupe: {len(items)}")
 
-            # Fetch RSS
-            items = fetch_rss(feed_url)
+            user = db.query(User).filter(User.id == alert.user_id).first()
+            if not user:
+                print(f"No user found for ID {alert.user_id}")
+                continue
 
-            # Filter new
-            new_items = filter_new_items(items, last_checked)
+            now = datetime.now(timezone.utc)
 
-            if new_items:
-                print(f"\nNEW ITEMS FOUND ({len(new_items)})")
+            #  HANDLE EMPTY
+            if not items:
+                print(" No jobs found → skipping")
+
+                alert.last_checked_at = now
+                db.commit()
+                continue
+
+            #  FIRST TIME
+            if alert.last_checked_at is None:
+                print("📨 First time → sending email")
 
                 send_email(
-                    RECEIVER_EMAIL,
+                    user.email,
                     build_subject(alert),
-                    build_body(new_items)
+                    build_body(items)
                 )
-
-                print(f"Email sent to {RECEIVER_EMAIL}")
+                print(f"Email sent to {user.email}")
 
             else:
-                print("No new items.")
+                print("Checking for new jobs...")
 
-            # Update timestamp (important for idempotency)
-            alert.last_checked_at = datetime.now(timezone.utc)
+                new_items = filter_new_items(items, alert.last_checked_at)
+
+                print(f"New jobs found: {len(new_items)}")
+
+                if new_items:
+                    send_email(
+                        user.email,
+                        build_subject(alert),
+                        build_body(new_items)
+                    )
+                    print(f"📨 Email sent to {user.email}")
+                else:
+                    print("No new jobs → skipping email")
+
+            #  UPDATE TIME (IMPORTANT)
+            latest_time = max(item["published_at"] for item in items)
+            alert.last_checked_at = latest_time
+
             db.commit()
 
-            print("Updated last_checked_at.\n")
-
-        print("\n=== Worker Run Complete ===\n")       
+    except Exception as e:
+        print(" Worker error:", e)
 
     finally:
         db.close()
@@ -103,10 +139,5 @@ def run_worker():
 
 if __name__ == "__main__":
     while True:
-        try:
-            print("\n=== NotifyX Worker Loop ===")
-            run_worker()
-        except Exception as e:
-            print("Worker error:", e)
+        run_worker()
         time.sleep(60)
-

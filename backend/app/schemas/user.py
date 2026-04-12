@@ -8,7 +8,7 @@ class CreateUser(BaseModel):
     last_name: Optional[str] = None
     email: EmailStr
     password: str = Field(min_length=8, max_length=128)
-    role: str
+    
 
 
 class UserResponse(BaseModel):

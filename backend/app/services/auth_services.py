@@ -1,17 +1,19 @@
 from datetime import timedelta
 from typing import Optional
+
+from fastapi import BackgroundTasks, HTTPException
+from starlette import status
+from sqlalchemy.orm import Session
+
 from app.db.models import User
 from app.core.security import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     verify_password,
     create_access_token,
 )
-from fastapi import HTTPException
-from starlette import status
-from sqlalchemy.orm import Session
+
 from app.schemas.auth import Token
-
-
+from app.services.email_sender import send_email
 
 
 def authenticate_user(username: str, password: str, db: Session) ->  Optional[User]:
@@ -23,19 +25,30 @@ def authenticate_user(username: str, password: str, db: Session) ->  Optional[Us
     return user
 
 
-def login_user(username: str, password: str, db: Session) -> Token:
+def login_user(username: str, password: str, db: Session, background_tasks: BackgroundTasks):
 
     user = authenticate_user(username, password, db)
     if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user.')
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    background_tasks.add_task(
+        send_email,
+        user.email,
+        "Login Alert",
+        f"Hello {user.username}, you logged in successfully."
+    )
  
-    token = create_access_token(
-        user.username, 
-        user.id, 
-        timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        username=user.username,
+        user_id=user.id,
+        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
 
     return Token(
-    access_token=token,
-    token_type="bearer"
+        access_token=access_token,
+        token_type="bearer"
     )
